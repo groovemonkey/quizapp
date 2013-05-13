@@ -26,4 +26,7 @@ User -->
 
 
 Possible bugs:
-##categories can't have spaces
+##categories can't have spaces?
+rationale for saving object at every input: categories must be visible in multiple places (simultaneous input + output)
+
+

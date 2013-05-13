@@ -135,12 +135,14 @@ Template.createQuiz.events({
     Meteor.flush();
     focusText(t.find("#answerInput"));
   },
+
+  /////// THIS FUNCTION CREATES A NEW, UNFINISHED OBJECT.
   'keyup #newQuizName': function(e,t) {
       if (e.which === 13) {
         var name = String(e.target.value || "");
         var storedName = Session.get('chosenQuiz');
 
-        // if the field is not empty
+          // if the field is not empty
         if (name) {
           if (storedName) {
             var quiz_id = Quizzes.findOne({name: storedName})['_id'];
@@ -152,11 +154,24 @@ Template.createQuiz.events({
 
           // in both cases, update the session value
           Session.set('chosenQuiz', name);
-          // clear input field
+         // clear input field
           e.target.value = "";
         }
       }
-    }
+    },
+
+  'click #btnSaveAnswer': function(e,t) {
+    // save the answer
+
+
+    Session.set('new_answer_for_new_quiz', false);
+  },
+
+
+  'click #btnSaveQuestion': function(e,t) {
+
+    Session.set('new_question_for_new_quiz', false);
+  }
 
 });
 

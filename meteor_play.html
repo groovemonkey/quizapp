@@ -66,7 +66,7 @@
 <template name="createQuiz">
   <h2>Let's create a quiz!</h2>
 
-  Quiz Name:<input type="text" id="newQuizName" />
+  Quiz Name: <input type="text" id="newQuizName" />
   <br>
 
 
@@ -79,9 +79,7 @@
     </div>
   {{/each}}
 
-
   {{#if new_category}}
-    <br>
     <div class="row">
       <div class="span2">Add Category:</div><div class="span5"><input type="text" id="quizCategory" placeholder="category name" /></div>
     </div>
@@ -102,56 +100,97 @@
   </div> <!-- End Categories Section -->
 
 
+  <br><br>
+
+
+  <!-- Start Questions Section -->
+
+
+    <!-- Show All Questions -->
+  <div class="questionList">
+    {{#each quiz.questions}}
+      <p>Question Text: {{text}}</p>
+
+      {{#each answers}}
+        <p>Answer: {{text}}</p>
+        <p>Affected Categories: {{affected_categories}}</p>
+      {{/each}}
+
+
+
+    {{/each}}
+
+
+  </div>
+
+
+
+
+
 
   {{#if new_question}}
 
   <div class="newQuizQuestion">
-  <input type="text" id="questionInput" />
 
-  <br>
+    Question: <input type="text" id="questionInput" />
 
-  {{#if new_answer}}
-    <div class="answer">
-    <input type="text" id="answerInput" />
+    <br>
 
-    <fieldset>
-          <legend>Answer Category</legend>
-          <p>
-             <label>Answer Category</label>
-             <select class="answerCategory">
+    {{#if new_answer}}
 
-               {{#each quizObject.categories}}
-               <option value="{{name}}">{{name}}</option>
-               {{/each}}
+    <br><br>
+      <div class="answer">
+        Answer: <input type="text" id="answerInput" />
 
-             </select>
-          </p>
-       </fieldset>
+        <fieldset>
+              <p>
+                 <label>Answer Category</label>
+                 <select class="answerCategory">
 
-    </div> <!-- End answer Div -->
+                   {{#each quizObject.categories}}
+                   <option value="{{name}}">{{name}}</option>
+                   {{/each}}
+
+                 </select>
+              </p>
+           </fieldset>
+
+        <button class="btn" type="button" id="btnSaveAnswer">Save Answer</button>
+        <br><br>
+
+       </div> <!-- End answer Div -->
 
     {{else}}
-      <br>
-      <div class="btn btn-inverse" id="btnNewAnswer">&plus; Answer</div>
+    <br>
+    <div class="btn btn-inverse" id="btnNewAnswer">&plus; Answer</div>
 
 
     {{/if}} <!-- End new_answer If -->
 
+
+    <div class="btn btn-inverse" id="btnSaveQuestion">&plus; Save Question</div>
   </div> <!-- End Quiz Question Div -->
 
-  {{else}}
+
+
+
+  {{else}} <!-- If NOT new_question -->
     <br>
     <div class="btn btn-inverse" id="btnNewQuestion">&plus; Question</div>
 
   {{/if}}
 
-    <br>
-    <div class="btn btn-inverse" id="btnNewChoice">&plus; Answer</div>
-    <br>
-    <input type="text" class="newQuiz" />
 
-  <br>
-  <input type="button" id="createQuiz" value="Create Quiz!" />
+
+  <!-- End Questions Section -->
+
+
+
+
+
+
+  <br><br><br>
+  <button class="btn btn-large btn-primary" id="createQuiz" type="button">Create Quiz!</button>
 </template>
 
 
