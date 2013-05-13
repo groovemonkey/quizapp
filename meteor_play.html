@@ -1,0 +1,152 @@
+<head>
+  <title>Playin' Around With Meteor</title>
+</head>
+
+<body>
+  {{> quizList}}
+  {{> bodyTemplate}}
+</body>
+
+
+<template name="bodyTemplate">
+  {{#if mode_is_takeQuiz}}
+    {{> selectedQuiz}} <!-- Take the Quiz -->
+  {{/if}}
+
+  {{#if mode_is_createQuiz}}
+    {{> createQuiz}}
+  {{/if}}
+</template>
+
+
+<template name="hello">
+  <h1>Hello World!</h1>
+  {{greeting}}
+  <input type="button" value="Click" />
+</template>
+
+
+<template name="quizList">
+  <!-- List all quizzes -->
+  <ul>
+    {{#each quizzes}}
+      <li><span class={{name}}>{{name}}</span> by {{author}}</li>
+    {{/each}}
+  </ul>
+  <h3>Select Quiz Mode</h3>
+  <div class="btn btn-inverse" id="btnCreateQuizMode">Create Quiz Mode</div>
+  <div class="btn btn-inverse" id="btnTakeQuizMode">Take Quiz Mode</div>
+  <br><br>
+  <p>The chosen quiz is {{selectedQuiz.name}} <button id="btnClearChosenQuiz"> x</button></p>
+  <br><p>Your selected Mode is {{selectedMode}}</p>
+
+</template>
+
+
+<template name="selectedQuiz">
+  <h3>You're playing a quiz by {{quiz.author}}</h3>
+  {{#each quiz.questions}}
+
+  <h2>{{text}}</h2>
+
+    {{#each answers}}
+      <input type="checkbox" value="1">
+      {{text}}
+      <br>
+    {{/each}}
+
+
+  {{/each}}
+
+  <br>
+  <input type="button" value="submitQuizAnswers" />
+
+</template>
+
+
+
+<template name="createQuiz">
+  <h2>Let's create a quiz!</h2>
+
+  Quiz Name:<input type="text" id="newQuizName" />
+  <br>
+
+
+  <div id="Categories">
+
+  {{#each quiz.categories}}
+    <div class="category">
+      <p>{{name}}</p>
+      <p>{{description}}</p>
+    </div>
+  {{/each}}
+
+
+  {{#if new_category}}
+    <br>
+    <div class="span2">Add Category:</div><div class="span10"><input type="text" id="quizCategory" placeholder="category name" /></div>
+    <br>
+    <div class="span2">Description:</div><div class="span10"><input type="textarea" id="quizCategoryDescription" /></div>
+    <br><div class="alert btn btn-inverse" id="btnAddCategory">&plus; Add</div>
+
+
+  {{else}}
+    <div class="btn btn-inverse" id="btnNewCategory">&plus; Category</div>
+  {{/if}} <!-- End new_category If -->
+
+  </div> <!-- End Categories Section -->
+
+
+
+  {{#if new_question}}
+
+  <div class="newQuizQuestion">
+  <input type="text" id="questionInput" />
+
+  <br>
+
+  {{#if new_answer}}
+    <div class="answer">
+    <input type="text" id="answerInput" />
+
+    <fieldset>
+          <legend>Answer Category</legend>
+          <p>
+             <label>Answer Category</label>
+             <select class="answerCategory">
+
+               {{#each quizObject.categories}}
+               <option value="{{name}}">{{name}}</option>
+               {{/each}}
+
+             </select>
+          </p>
+       </fieldset>
+
+    </div> <!-- End answer Div -->
+
+    {{else}}
+      <br>
+      <div class="btn btn-inverse" id="btnNewAnswer">&plus; Answer</div>
+
+
+    {{/if}} <!-- End new_answer If -->
+
+  </div> <!-- End Quiz Question Div -->
+
+  {{else}}
+    <br>
+    <div class="btn btn-inverse" id="btnNewQuestion">&plus; Question</div>
+
+  {{/if}}
+
+    <br>
+    <div class="btn btn-inverse" id="btnNewChoice">&plus; Answer</div>
+    <br>
+    <input type="text" class="newQuiz" />
+
+  <br>
+  <input type="button" id="createQuiz" value="Create Quiz!" />
+</template>
+
+

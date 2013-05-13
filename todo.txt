@@ -1,0 +1,29 @@
+YOU WERE JUST WORKING ON:
+
+  -building-quiz template
+
+
+TODO:
+
+- A form for creating/adding quizzes
+- A way of scoring quizzes
+
+
+Quiz -->
+    Categories
+    Questions --> Answers
+
+
+A user has a record of all quizzes taken and made.
+For each quiz taken, there is a record of choices and the last calculated score.
+User -->
+  Quizzes
+    Created
+    Taken
+      Choices
+      Scores
+
+
+
+Possible bugs:
+##categories can't have spaces
