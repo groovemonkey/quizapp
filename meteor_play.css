@@ -3,3 +3,14 @@
 span {
   color: blue;
 }
+
+#categories {
+  padding: 10px 20px;
+  border: 2px solid black;
+}
+
+#categories * {
+  display: inline;
+  font-weight: bold;
+  padding-right: 15px;
+}
