@@ -66,7 +66,7 @@
 <template name="createQuiz">
   <h2>Let's create a quiz!</h2>
 
-  Quiz Name: <input type="text" id="newQuizName" />
+  Quiz Name: <input type="text" id="newQuizName" value="{{quiz.name}}"/>
   <br>
 
 
@@ -75,7 +75,8 @@
   {{#each quiz.categories}}
     <div class="category">
       <p>{{name}}</p>
-      <p>{{description}}</p>
+      <!-- No Description -->
+      <!-- <p>{{description}}</p> -->
     </div>
   {{/each}}
 
@@ -109,19 +110,21 @@
     <!-- Show All Questions -->
   <div class="questionList">
     {{#each quiz.questions}}
-      <p>Question Text: {{text}}</p>
+      <div class="question">
+        <p class="questiontext">{{text}}</p>
 
-      {{#each answers}}
-        <p>Answer: {{text}}</p>
-        <p>Affected Categories: {{affected_categories}}</p>
-      {{/each}}
+        {{#each answers}}
+          <div class="answer">
+            <p>Answer: {{text}}</p>
+            <p>Affected Categories: {{affected_categories}}</p>
+          </div>
+        {{/each}}
 
-
-
+      </div> <!-- end div.question -->
     {{/each}}
 
 
-  </div>
+  </div> <!-- end div.questionList -->
 
 
 
@@ -147,7 +150,7 @@
                  <label>Answer Category</label>
                  <select class="answerCategory">
 
-                   {{#each quizObject.categories}}
+                   {{#each quiz.categories}}
                    <option value="{{name}}">{{name}}</option>
                    {{/each}}
 

@@ -14,3 +14,7 @@ span {
   font-weight: bold;
   padding-right: 15px;
 }
+
+.selected {
+  background-color: red;
+}

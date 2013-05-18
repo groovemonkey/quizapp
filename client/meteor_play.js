@@ -24,6 +24,7 @@ Template.quizList.events({
 
 Session.set('chosenQuiz', null);
 Session.set('mode', null);
+Session.set('currentQuestionText', null);
 
 
 // this is fucking retarded, because I can't put any view-logic in the view (a la ERB)
@@ -123,6 +124,8 @@ Template.createQuiz.events({
       // clear the input fields
       $(namefield).val('');
       $(descfield).val('');
+      // reset state
+      Session.set('new_category_for_new_quiz', false);
     }
   },
   'click #btnNewQuestion' : function(e,t) {
@@ -141,36 +144,70 @@ Template.createQuiz.events({
       if (e.which === 13) {
         var name = String(e.target.value || "");
         var storedName = Session.get('chosenQuiz');
-
-          // if the field is not empty
-        if (name) {
-          if (storedName) {
-            var quiz_id = Quizzes.findOne({name: storedName})['_id'];
+        if (name) { // if the field is not empty
+          if (storedName) { // and there's a current quiz
+            var quiz_id = getQuizIDbyName(storedName);
             Quizzes.update({_id: quiz_id},{$set:{name: name}});
           }
-          else {
+          else { // if there's a name in the field but no current quiz
             Quizzes.insert({name: name});
           }
-
           // in both cases, update the session value
           Session.set('chosenQuiz', name);
-         // clear input field
-          e.target.value = "";
+          e.target.value = ""; // clear input field
         }
       }
     },
 
+  //// MODIFYING QUESTION TEXT
+  'keyup #questionInput': function(e,t) {
+    var questiontext = e.target.value;
+    var currentQuizName = Session.get('chosenQuiz'); // current quiz name, if exists
+    var currentQuestionText = Session.get('currentQuestionText');
+
+    // user hits enter, field is not empty, AND we're working on a quiz
+    if (e.which === 13 && questiontext && currentQuizName) {
+      var quiz_id = getQuizIDbyName(currentQuizName);
+
+      if (currentQuestionText) { // if we're working on a question already
+        Quizzes.update({_id: quiz_id, "questions.text": currentQuestionText},{$set:{"questions.text": questiontext}});
+      }
+      else { // if no question exists
+        Quizzes.update({_id: quiz_id},{$push:{questions: {text: questiontext}}}); // no answers yet
+      }
+      // in either case, update the Session var
+      Session.set('currentQuestionText', questiontext);
+    }
+  },
+
+
   'click #btnSaveAnswer': function(e,t) {
-    // save the answer
+    // save the answer...(requires an existing question)
+    if (Session.get('currentQuestionText')) {
 
 
-    Session.set('new_answer_for_new_quiz', false);
+
+      Session.set('new_answer_for_new_quiz', false);
+    }
+
+
   },
 
 
   'click #btnSaveQuestion': function(e,t) {
 
     Session.set('new_question_for_new_quiz', false);
+  },
+
+  'click .question': function(e,t) {
+    var tgt = $(e.target).parents('.question'); // top level (in case you clicked on an answer or something)
+    var questiontext = tgt.children('.questiontext').text(); // further down in the DOM, find questiontext
+
+    // out with the old...
+    $('.question.selected').removeClass('selected');
+
+    $(tgt).addClass('selected');
+    Session.set('currentQuestionText', questiontext);
   }
 
 });
@@ -187,5 +224,15 @@ function focusText(i) {
   i.select();
 };
 
+// return the quiz ID for a given quizname
+function getQuizIDbyName(quizname) {
+  if (quizname) {
+    return Quizzes.findOne({name: quizname})['_id'];
+  }
+  else {
+    console.log("Error: getQuizIDbyName called without a session.chosenQuiz");
+    return false;
+  }
+}
 
 
