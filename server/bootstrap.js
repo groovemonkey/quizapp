@@ -5,6 +5,7 @@ Meteor.publish('Quizzes', function () {
  });
 
 
+
 // insert sample quiz data if there are no quizzes
 if (Quizzes.find().count() === 0) {
   Quizzes.insert({
@@ -33,8 +34,25 @@ if (Quizzes.find().count() === 0) {
         ]
         ,answertype: "singlechoice"
       }
-
     ],
   });
-
 };
+
+// Methods
+
+Meteor.methods({
+
+  //test: function() { console.log("you just called a server function from the client!"); },
+
+  updateQuestionText: function(params) {
+    var quizID = params.id;
+    var currentText = params.currentText;
+    var replacementText = params.replacementText;
+
+    Quizzes.update(
+      { _id: quizID, 'questions.text': currentText  } ,
+      { $set: { 'questions.$.text': replacementText } }
+    );
+  }
+
+});

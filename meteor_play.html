@@ -129,13 +129,15 @@
 
 
 
-
+  <p>Your currently selected question: {{currentQuestionText}}
+    <button id="btnClearCurrentQuestion" class="btn btn-small">clear question</button>
+  </p>
 
   {{#if new_question}}
 
   <div class="newQuizQuestion">
 
-    Question: <input type="text" id="questionInput" />
+    Question: <input type="text" id="questionInput" value="{{currentQuestionText}}" />
 
     <br>
 

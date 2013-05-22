@@ -22,9 +22,10 @@ Template.quizList.events({
 
 /////////////////////////
 
-Session.set('chosenQuiz', null);
+Session.set('chosenQuiz', "");
 Session.set('mode', null);
 Session.set('currentQuestionText', null);
+Session.set('new_category_for_new_quiz', false);
 
 
 // this is fucking retarded, because I can't put any view-logic in the view (a la ERB)
@@ -57,11 +58,11 @@ Template.quizList.quizzes = function() {
 };
 Template.quizList.selectedQuiz = function() {
   return Quizzes.findOne({name: Session.get('chosenQuiz')});
-}
+};
 
 Template.quizList.events({
   'click #btnClearChosenQuiz' : function(e,t) {
-    Session.set('chosenQuiz', null);
+    Session.set('chosenQuiz', "");
   }
 
 }); // end quizList template events
@@ -89,8 +90,6 @@ Template.createQuiz.quiz = function() {
   }
 };
 
-Session.set('new_category_for_new_quiz', false);
-
 Template.createQuiz.new_category = function() {
   return Session.get('new_category_for_new_quiz');
 }
@@ -99,6 +98,12 @@ Template.createQuiz.new_question = function() {
 }
 Template.createQuiz.new_answer = function() {
   return Session.get('new_answer_for_new_quiz');
+}
+Template.createQuiz.currentQuestionText = function() {
+  var cq = Session.get('currentQuestionText');
+
+  if (cq) { return cq; }
+  else { return "No Question Selected"; }
 }
 
 
@@ -109,6 +114,7 @@ Template.createQuiz.events({
     Meteor.flush();
     focusText(t.find("#quizCategory"));
   },
+
   'click #btnAddCategory' : function(e,t) {
     var namefield = $('#quizCategory');
     var descfield = $('#quizCategoryDescription');
@@ -128,11 +134,14 @@ Template.createQuiz.events({
       Session.set('new_category_for_new_quiz', false);
     }
   },
+
   'click #btnNewQuestion' : function(e,t) {
     Session.set('new_question_for_new_quiz', true);
+    Session.set('currentQuestionText', null); // clear the selected question, if any
     Meteor.flush();
     focusText(t.find("#questionInput"));
   },
+
   'click #btnNewAnswer' : function(e,t) {
     Session.set('new_answer_for_new_quiz', true);
     Meteor.flush();
@@ -161,22 +170,9 @@ Template.createQuiz.events({
 
   //// MODIFYING QUESTION TEXT
   'keyup #questionInput': function(e,t) {
-    var questiontext = e.target.value;
-    var currentQuizName = Session.get('chosenQuiz'); // current quiz name, if exists
-    var currentQuestionText = Session.get('currentQuestionText');
-
-    // user hits enter, field is not empty, AND we're working on a quiz
-    if (e.which === 13 && questiontext && currentQuizName) {
-      var quiz_id = getQuizIDbyName(currentQuizName);
-
-      if (currentQuestionText) { // if we're working on a question already
-        Quizzes.update({_id: quiz_id, "questions.text": currentQuestionText},{$set:{"questions.text": questiontext}});
-      }
-      else { // if no question exists
-        Quizzes.update({_id: quiz_id},{$push:{questions: {text: questiontext}}}); // no answers yet
-      }
-      // in either case, update the Session var
-      Session.set('currentQuestionText', questiontext);
+    // user hits Enter
+    if (e.which === 13) {
+      clientUpdateQuestionText();
     }
   },
 
@@ -195,9 +191,11 @@ Template.createQuiz.events({
 
 
   'click #btnSaveQuestion': function(e,t) {
-
-    Session.set('new_question_for_new_quiz', false);
+    // include case: when user hits this button instead of doing 'ENTER' on the question input field
+        // run same stuff (abstract stuff out into a function, use in both this event and the ENTER event)
+    clientUpdateQuestionText();
   },
+
 
   'click .question': function(e,t) {
     var tgt = $(e.target).parents('.question'); // top level (in case you clicked on an answer or something)
@@ -206,8 +204,14 @@ Template.createQuiz.events({
     // out with the old...
     $('.question.selected').removeClass('selected');
 
-    $(tgt).addClass('selected');
+    // in with the new...
     Session.set('currentQuestionText', questiontext);
+    $(tgt).addClass('selected');
+  },
+
+
+  'click #btnClearCurrentQuestion': function(e,t) {
+    Session.set('currentQuestionText', null);
   }
 
 });
@@ -225,6 +229,7 @@ function focusText(i) {
 };
 
 // return the quiz ID for a given quizname
+// TODO: This needs to be refactored...check to see if quizname is UNDEFINED (because it could be)...and return a better error
 function getQuizIDbyName(quizname) {
   if (quizname) {
     return Quizzes.findOne({name: quizname})['_id'];
@@ -234,5 +239,38 @@ function getQuizIDbyName(quizname) {
     return false;
   }
 }
+
+function clientUpdateQuestionText() {
+  var questiontext = $('#questionInput').val();
+  console.log("questionInput value is " + questiontext);
+
+  var currentQuizName = Session.get('chosenQuiz'); // current quiz name, if exists
+  var currentQuestionText = Session.get('currentQuestionText');
+
+  // field is not empty AND we're working on a quiz
+  if (questiontext && currentQuizName) {
+    var quiz_id = getQuizIDbyName(currentQuizName);
+
+    if (currentQuestionText) { // if we're working on a question already
+      console.log("about to update the question...");
+
+      var UpdateParams = {
+        id: quiz_id,
+        currentText: currentQuestionText,
+        replacementText: questiontext
+      }
+
+      Meteor.call("updateQuestionText", UpdateParams);
+    }
+    else { // if no question exists
+            console.log("about to create a new question by updating the quiz...");
+            Quizzes.update({_id: quiz_id},{$push:{questions: {text: questiontext}}}); // no answers yet
+          }
+          // in either case, update the Session var
+          Session.set('currentQuestionText', questiontext);
+          // make the question dialogue go away
+          Session.set('new_question_for_new_quiz', false);
+        }
+  }
 
 
