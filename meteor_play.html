@@ -141,10 +141,26 @@
 
     <br>
 
+    <div class="btn btn-inverse" id="btnSaveQuestion">&plus; Save Question</div>
+  </div> <!-- End Quiz Question Div -->
+
+
+
+
+  {{else}} <!-- If NOT new_question -->
+    <br>
+    <div class="btn btn-inverse" id="btnNewQuestion">&plus; Question</div>
+
+  {{/if}}
+
+
+
+  {{#if currentQuestionText }} <!-- If a question is selected...offer to add answers! -->
+
     {{#if new_answer}}
 
     <br><br>
-      <div class="answer">
+      <div class="newAnswerDiv">
         Answer: <input type="text" id="answerInput" />
 
         <fieldset>
@@ -167,23 +183,13 @@
 
     {{else}}
     <br>
-    <div class="btn btn-inverse" id="btnNewAnswer">&plus; Answer</div>
+    <br>
+    <div class="btn btn-inverse" id="btnNewAnswer">Add Answer to this Question</div>
 
 
     {{/if}} <!-- End new_answer If -->
 
-
-    <div class="btn btn-inverse" id="btnSaveQuestion">&plus; Save Question</div>
-  </div> <!-- End Quiz Question Div -->
-
-
-
-
-  {{else}} <!-- If NOT new_question -->
-    <br>
-    <div class="btn btn-inverse" id="btnNewQuestion">&plus; Question</div>
-
-  {{/if}}
+  {{/if }} <!-- End is_a_question_selected If -->
 
 
 

@@ -101,10 +101,9 @@ Template.createQuiz.new_answer = function() {
 }
 Template.createQuiz.currentQuestionText = function() {
   var cq = Session.get('currentQuestionText');
-
-  if (cq) { return cq; }
-  else { return "No Question Selected"; }
+  if (cq) { return cq; } else { return false; }
 }
+
 
 
 /////// Quiz Creation Events
@@ -178,11 +177,13 @@ Template.createQuiz.events({
 
 
   'click #btnSaveAnswer': function(e,t) {
-    // save the answer...(requires an existing question)
+    // requires an existing question
     if (Session.get('currentQuestionText')) {
 
+      // get the answer
 
 
+      // done with the answer; remove the form
       Session.set('new_answer_for_new_quiz', false);
     }
 

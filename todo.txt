@@ -1,16 +1,16 @@
 YOU WERE JUST WORKING ON:
 
-  -updating questions (with MORE search parameters than just _id) doesn't work anymore...wtf?
-  -building-quiz template
+-event for 'click #btnSaveAnswer' (saving answers to Quizzes.questions.q)
+
 
 
 TODO:
 
 - A form for creating/adding quizzes
-    -- event for 'click #btnSaveAnswer' (saving answers to DB)
-    -- event for 'click #btnSaveQuestion' (saving questions to DB)
+    -- delete questions button
 
 - A way of scoring quizzes
+- A way of taking quizzes
 
 
 
