@@ -178,7 +178,7 @@ Template.createQuiz.events({
         var storedName = Session.get('chosenQuiz');
         if (name) { // if the field is not empty
           if (storedName) { // and there's a current quiz
-            var quiz_id = getQuizIDbyName(storedName);
+            var quiz_id = Template.createQuiz.currentQuizID();
             Quizzes.update({_id: quiz_id},{$set:{name: name}});
           }
           else { // if there's a name in the field but no current quiz
@@ -277,17 +277,6 @@ function focusText(i) {
   i.select();
 };
 
-// return the quiz ID for a given quizname
-// TODO: This needs to be refactored...check to see if quizname is UNDEFINED (because it could be)...and return a better error
-function getQuizIDbyName(quizname) {
-  if (quizname) {
-    return Quizzes.findOne({name: quizname})['_id'];
-  }
-  else {
-    console.log("Error: getQuizIDbyName called without a session.chosenQuiz");
-    return false;
-  }
-}
 
 function clientUpdateQuestionText() {
   var questiontext = $('#questionInput').val();
@@ -297,11 +286,9 @@ function clientUpdateQuestionText() {
 
   // field is not empty AND we're working on a quiz
   if (questiontext && currentQuizName) {
-    var quiz_id = getQuizIDbyName(currentQuizName);
+    var quiz_id = Template.createQuiz.currentQuizID();
 
     if (currentQuestionText) { // if we're working on a question already
-      console.log("about to update the question...");
-
       var UpdateParams = {
         id: quiz_id,
         currentText: currentQuestionText,
