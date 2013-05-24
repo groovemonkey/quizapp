@@ -7,7 +7,6 @@ YOU WERE JUST WORKING ON:
 TODO:
 
 - A form for creating/adding quizzes
-    -- delete questions button
 
 - A way of scoring quizzes
 - A way of taking quizzes

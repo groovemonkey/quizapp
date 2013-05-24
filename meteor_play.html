@@ -111,7 +111,8 @@
   <div class="questionList">
     {{#each quiz.questions}}
       <div class="question">
-        <p class="questiontext">{{text}}</p>
+        <br>
+        <span class="questiontext">{{text}}</span><button class="btnDeleteQuestion" class="btn btn-small">x</button>
 
         {{#each answers}}
           <div class="answer">
@@ -127,17 +128,18 @@
   </div> <!-- end div.questionList -->
 
 
-
-
-  <p>Your currently selected question: {{currentQuestionText}}
-    <button id="btnClearCurrentQuestion" class="btn btn-small">clear question</button>
-  </p>
+  {{#if currentQuestionText }}
+    <br>
+    <p>Your currently selected question: {{currentQuestionText}}
+      <button id="btnClearCurrentQuestion" class="btn btn-small">clear question</button>
+    </p>
+  {{/if }}
 
   {{#if new_question}}
 
   <div class="newQuizQuestion">
 
-    Question: <input type="text" id="questionInput" value="{{currentQuestionText}}" />
+    Question: <input type="text" id="questionInput" value="" />
 
     <br>
 
@@ -166,7 +168,7 @@
         <fieldset>
               <p>
                  <label>Answer Category</label>
-                 <select class="answerCategory">
+                 <select id="answerCategoryDropdown">
 
                    {{#each quiz.categories}}
                    <option value="{{name}}">{{name}}</option>

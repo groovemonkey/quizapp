@@ -136,10 +136,30 @@ Template.createQuiz.events({
 
   'click #btnNewQuestion' : function(e,t) {
     Session.set('new_question_for_new_quiz', true);
+    Session.set('new_answer_for_new_quiz', false); // prevent strange answer-form behavior
     Session.set('currentQuestionText', null); // clear the selected question, if any
     Meteor.flush();
     focusText(t.find("#questionInput"));
   },
+
+  'click .btnDeleteQuestion' : function(e,t) {
+    var tgt = $(e.target).parents('.question');
+    var questiontext = tgt.children('.questiontext').text();
+    var storedName = Session.get('chosenQuiz');
+    var quiz_id = Quizzes.findOne({name: storedName})['_id'];
+
+    // delete it
+    var params = {
+      questionText: questiontext,
+      id: quiz_id
+    };
+
+    Meteor.call("deleteQuestion", params);
+
+    // clear the deleted question
+    Session.set('currentQuestionText', null);
+  },
+
 
   'click #btnNewAnswer' : function(e,t) {
     Session.set('new_answer_for_new_quiz', true);
@@ -181,6 +201,9 @@ Template.createQuiz.events({
     if (Session.get('currentQuestionText')) {
 
       // get the answer
+      var answerText = $('#answerInput').val();
+      var answerCategory = $('#answerCategoryDropdown').val();
+      alert("the answer category is " + answerCategory);
 
 
       // done with the answer; remove the form
@@ -199,20 +222,31 @@ Template.createQuiz.events({
 
 
   'click .question': function(e,t) {
-    var tgt = $(e.target).parents('.question'); // top level (in case you clicked on an answer or something)
-    var questiontext = tgt.children('.questiontext').text(); // further down in the DOM, find questiontext
+    // if you clicked on the delete button, DONT DO ANYTHING
+    if ($(e.target).is('button')) {
+      // DO NOTHING -- we clicked on a more specific element
+      return;
+    }
+    else {
+      var tgt = $(e.target).parents('.question'); // top level (in case you clicked on an answer or something)
+      var questiontext = tgt.children('.questiontext').text(); // further down in the DOM, find questiontext
 
-    // out with the old...
-    $('.question.selected').removeClass('selected');
+      // out with the old...
+      $('.question.selected').removeClass('selected');
 
-    // in with the new...
-    Session.set('currentQuestionText', questiontext);
-    $(tgt).addClass('selected');
+      // in with the new...
+      Session.set('currentQuestionText', questiontext);
+      $(tgt).addClass('selected');
+    }
+
   },
 
 
   'click #btnClearCurrentQuestion': function(e,t) {
     Session.set('currentQuestionText', null);
+
+    // if we were filling in an answer, forget it
+    Session.set('new_answer_for_new_quiz', false);
   }
 
 });
@@ -243,7 +277,6 @@ function getQuizIDbyName(quizname) {
 
 function clientUpdateQuestionText() {
   var questiontext = $('#questionInput').val();
-  console.log("questionInput value is " + questiontext);
 
   var currentQuizName = Session.get('chosenQuiz'); // current quiz name, if exists
   var currentQuestionText = Session.get('currentQuestionText');

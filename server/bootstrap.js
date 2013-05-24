@@ -38,8 +38,9 @@ if (Quizzes.find().count() === 0) {
   });
 };
 
-// Methods
 
+
+// Methods
 Meteor.methods({
 
   //test: function() { console.log("you just called a server function from the client!"); },
@@ -53,6 +54,19 @@ Meteor.methods({
       { _id: quizID, 'questions.text': currentText  } ,
       { $set: { 'questions.$.text': replacementText } }
     );
-  }
+  },
 
-});
+
+  deleteQuestion: function(params) {
+    var quizID = params.id;
+    var questionText = params.questionText;
+
+    Quizzes.update(
+      { _id: quizID, 'questions.text': questionText },
+      { $pull: { questions: {text: questionText } } }
+    );
+  } // end deleteQuestion function
+
+
+
+}); // end Meteor.methods
