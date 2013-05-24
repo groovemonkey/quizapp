@@ -1,7 +1,7 @@
 YOU WERE JUST WORKING ON:
 
 -event for 'click #btnSaveAnswer' (saving answers to Quizzes.questions.q)
-
+-finish deleteAnswerFromQuestion method in bootstrap.js
 
 
 TODO:

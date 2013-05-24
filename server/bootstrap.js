@@ -43,8 +43,6 @@ if (Quizzes.find().count() === 0) {
 // Methods
 Meteor.methods({
 
-  //test: function() { console.log("you just called a server function from the client!"); },
-
   updateQuestionText: function(params) {
     var quizID = params.id;
     var currentText = params.currentText;
@@ -54,6 +52,27 @@ Meteor.methods({
       { _id: quizID, 'questions.text': currentText  } ,
       { $set: { 'questions.$.text': replacementText } }
     );
+  },
+
+
+  addAnswerToQuestion: function(params) {
+    var quizID = params.id;
+    var questionText = params.questionText;
+    var answerText = params.answerText;
+    var categories = params.categories;
+
+    Quizzes.update(
+      { _id: quizID, 'questions.text': questionText  } ,
+      { $push: { 'questions.$.answers': {text: answerText, affected_categories: categories} } }
+    );
+  },
+
+
+  deleteAnswerFromQuestion: function(params) {
+    var quizID = params.id;
+    var questionText = params.questionText;
+    var answerText = params.answerText;
+
   },
 
 

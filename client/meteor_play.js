@@ -103,6 +103,10 @@ Template.createQuiz.currentQuestionText = function() {
   var cq = Session.get('currentQuestionText');
   if (cq) { return cq; } else { return false; }
 }
+Template.createQuiz.currentQuizID = function() {
+  var storedName = Session.get('chosenQuiz');
+  return Quizzes.findOne({name: storedName})['_id'];
+}
 
 
 
@@ -198,12 +202,23 @@ Template.createQuiz.events({
 
   'click #btnSaveAnswer': function(e,t) {
     // requires an existing question
-    if (Session.get('currentQuestionText')) {
+    var questionText = Session.get('currentQuestionText');
+    if (questionText) {
 
       // get the answer
       var answerText = $('#answerInput').val();
       var answerCategory = $('#answerCategoryDropdown').val();
-      alert("the answer category is " + answerCategory);
+      var quiz_id = Template.createQuiz.currentQuizID();
+
+      // call the Server method to add an answer
+      var params = {
+        id: quiz_id,
+        questionText: questionText,
+        answerText: answerText,
+        categories: answerCategory
+      };
+
+      Meteor.call("addAnswerToQuestion", params);
 
 
       // done with the answer; remove the form
@@ -222,9 +237,8 @@ Template.createQuiz.events({
 
 
   'click .question': function(e,t) {
-    // if you clicked on the delete button, DONT DO ANYTHING
     if ($(e.target).is('button')) {
-      // DO NOTHING -- we clicked on a more specific element
+      // if you clicked on the delete button, DONT DO ANYTHING
       return;
     }
     else {
