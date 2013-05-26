@@ -123,11 +123,10 @@ Template.createQuiz.events({
     var descfield = $('#quizCategoryDescription');
     var name = namefield.val();
     var description = descfield.val();
-    var storedName = Session.get('chosenQuiz');
+    var quiz_id = Template.createQuiz.currentQuizID();
 
     // can't insert a category unless a quiz is selected and the category has a name
-    if (name && storedName) {
-      var quiz_id = Quizzes.findOne({name: storedName})['_id'];
+    if (name && quiz_id) {
       Quizzes.update({_id: quiz_id},{$push: {categories: {name: name, description: description}}});
 
       // clear the input fields
@@ -149,8 +148,7 @@ Template.createQuiz.events({
   'click .btnDeleteQuestion' : function(e,t) {
     var tgt = $(e.target).parents('.question');
     var questiontext = tgt.children('.questiontext').text();
-    var storedName = Session.get('chosenQuiz');
-    var quiz_id = Quizzes.findOne({name: storedName})['_id'];
+    var quiz_id = Template.createQuiz.currentQuizID();
 
     // delete it
     var params = {
@@ -162,6 +160,21 @@ Template.createQuiz.events({
 
     // clear the deleted question
     Session.set('currentQuestionText', null);
+  },
+
+  'click .btnDeleteAnswer' : function(e,t) {
+    var tgt = $(e.target).parents('.answer');
+    var questionText = $(tgt).parents('.question').children('.questiontext').text();
+    var answerText = $(tgt).children('span').text();
+    var quiz_id = Template.createQuiz.currentQuizID();
+
+    var params = {
+      id: quiz_id,
+      questionText: questionText,
+      answerText: answerText
+    }
+
+    Meteor.call("deleteAnswerFromQuestion", params);
   },
 
 
@@ -220,12 +233,9 @@ Template.createQuiz.events({
 
       Meteor.call("addAnswerToQuestion", params);
 
-
       // done with the answer; remove the form
       Session.set('new_answer_for_new_quiz', false);
     }
-
-
   },
 
 
@@ -237,8 +247,8 @@ Template.createQuiz.events({
 
 
   'click .question': function(e,t) {
-    if ($(e.target).is('button')) {
-      // if you clicked on the delete button, DONT DO ANYTHING
+    if ( $(e.target).is('button') ) {
+      // if you clicked on the delete button for a question or answer, DONT DO ANYTHING
       return;
     }
     else {
@@ -298,7 +308,6 @@ function clientUpdateQuestionText() {
       Meteor.call("updateQuestionText", UpdateParams);
     }
     else { // if no question exists
-            console.log("about to create a new question by updating the quiz...");
             Quizzes.update({_id: quiz_id},{$push:{questions: {text: questiontext}}}); // no answers yet
           }
           // in either case, update the Session var

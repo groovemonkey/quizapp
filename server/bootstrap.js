@@ -1,8 +1,8 @@
 Quizzes = new Meteor.Collection("quizzes");
 
-Meteor.publish('Quizzes', function () {
-   return Quizzes.find();
- });
+// Meteor.publish('Quizzes', function () {
+//    return Quizzes.find();
+//  });
 
 
 
@@ -62,8 +62,8 @@ Meteor.methods({
     var categories = params.categories;
 
     Quizzes.update(
-      { _id: quizID, 'questions.text': questionText  } ,
-      { $push: { 'questions.$.answers': {text: answerText, affected_categories: categories} } }
+      { _id: quizID, 'questions.text': questionText },
+      { $push: { 'questions.$.answers': {text: answerText, affected_categories: categories }}}
     );
   },
 
@@ -72,6 +72,13 @@ Meteor.methods({
     var quizID = params.id;
     var questionText = params.questionText;
     var answerText = params.answerText;
+
+//     Quizzes.update(
+//       { _id: quizID, 'answers.text': answerText },
+//       //{ $pull: { answers: {text: answerText }}}
+//       //{ $pull: { questions: {text: questionText {answers: {text: answerText }}}}} //ERROR...only 2 nested {{}}
+//       //{ $pull: { 'questions.$.answers.$': {text: answerText }}}
+//     );
 
   },
 
@@ -82,7 +89,7 @@ Meteor.methods({
 
     Quizzes.update(
       { _id: quizID, 'questions.text': questionText },
-      { $pull: { questions: {text: questionText } } }
+      { $pull: { questions: {text: questionText }}}
     );
   } // end deleteQuestion function
 
