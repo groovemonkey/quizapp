@@ -73,12 +73,10 @@ Meteor.methods({
     var questionText = params.questionText;
     var answerText = params.answerText;
 
-//     Quizzes.update(
-//       { _id: quizID, 'answers.text': answerText },
-//       //{ $pull: { answers: {text: answerText }}}
-//       //{ $pull: { questions: {text: questionText {answers: {text: answerText }}}}} //ERROR...only 2 nested {{}}
-//       //{ $pull: { 'questions.$.answers.$': {text: answerText }}}
-//     );
+     Quizzes.update(
+       { _id: quizID, 'questions.text': questionText },
+       {$pull:{ "questions.$.answers":{"text": answerText }}}
+     );
 
   },
 

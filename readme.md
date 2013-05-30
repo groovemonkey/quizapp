@@ -10,8 +10,7 @@ Build and take your own multiple-choice, multiple-category tests. More coming...
 
 ###YOU WERE JUST WORKING ON:
 
-- deleteAnswerFromQuestion in bootstrap.js (mongo query for deleting)
-    (bootstrap.js, line 71) -- how to get mongo to delete the given answer object?
+
 
 
 ###TODO:
