@@ -1,7 +1,15 @@
 Quizzes = new Meteor.Collection("quizzes");
-
 Meteor.subscribe("Quizzes");
 
+////////// Set Up Session Variables //////////
+
+Session.set('chosenQuiz', "");
+Session.set('mode', null);
+Session.set('currentQuestionText', null);
+Session.set('new_category_for_new_quiz', false);
+Session.set('quizResults', null);
+
+//////////////////////////////////////////////
 
 
 Template.quizList.events({
@@ -11,23 +19,27 @@ Template.quizList.events({
     // get name of selected quiz
     Session.set('chosenQuiz', this.name);
   },
+
   'click #btnCreateQuizMode' : function(e,t) {
     Session.set('mode', 'createQuiz');
   },
+
   'click #btnTakeQuizMode' : function(e,t) {
-    Session.set('mode', 'takeQuiz');
+    if (Session.get('chosenQuiz')) {
+      Session.set('mode', 'takeQuiz');
+    }
+    else {
+      alert("You need to select a quiz (above) before you can take it!");
+    }
   }
-});
+
+}); // end Template.quizList.events()
+
+
+
 
 
 /////////////////////////
-
-Session.set('chosenQuiz', "");
-Session.set('mode', null);
-Session.set('currentQuestionText', null);
-Session.set('new_category_for_new_quiz', false);
-Session.set('quizResults', null);
-
 
 // this is fucking retarded, because I can't put any view-logic in the view (a la ERB)
 Template.bodyTemplate.mode_is_takeQuiz = function() {
@@ -62,7 +74,7 @@ Template.quizList.selectedQuiz = function() {
 };
 
 Template.quizList.events({
-  'click #btnClearChosenQuiz' : function(e,t) {
+  'click .btnClearChosenQuiz' : function(e,t) {
     Session.set('chosenQuiz', "");
   }
 
@@ -171,22 +183,28 @@ Template.createQuiz.events({
   },
 
   'click .btnDeleteAnswer' : function(e,t) {
-    var tgt = $(e.target).parents('.answer');
-    var questionText = $(tgt).parents('.question').children('.questiontext').text();
-    var answerText = $(tgt).children('span').text();
-    var quiz_id = Template.createQuiz.currentQuizID();
+    if (confirm("Are you sure you want to delete this answer?")) {
+      var tgt = $(e.target).parents('.answer');
+      var questionText = $(tgt).parents('.question').children('.questiontext').text();
+      var answerText = $(tgt).children('span').text();
+      var quiz_id = Template.createQuiz.currentQuizID();
 
-    var params = {
-      id: quiz_id,
-      questionText: questionText,
-      answerText: answerText
-    };
+      var params = {
+        id: quiz_id,
+        questionText: questionText,
+        answerText: answerText
+      };
 
-    Meteor.call("deleteAnswerFromQuestion", params);
+      Meteor.call("deleteAnswerFromQuestion", params);
+    }
+  },
+
+  'click .btnNewQuizToEdit': function(e,t) {
+    Session.set('chosenQuiz', "");
   },
 
 
-  'click #btnNewAnswer' : function(e,t) {
+  'click #btnNewAnswer': function(e,t) {
     Session.set('new_answer_for_new_quiz', true);
     Meteor.flush();
     focusText(t.find("#answerInput"));

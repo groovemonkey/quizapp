@@ -3,10 +3,17 @@
 </head>
 
 <body>
-  {{> quizList}}
-  {{> bodyTemplate}}
-</body>
+  <div class="row">
 
+    <div class="span4 sidebar">
+      {{> quizList}}
+    </div>
+    <div class="span8 mainwindow">
+      {{> bodyTemplate}}
+    </div>
+
+  </div>
+</body>
 
 <template name="bodyTemplate">
   {{#if mode_is_takeQuiz}}
@@ -21,6 +28,8 @@
 
 
 <template name="quizList">
+  <div class="quizListDiv">
+
   <!-- List all quizzes -->
   <ul id="quizListUL">
     {{#each quizzes}}
@@ -28,16 +37,15 @@
     {{/each}}
   </ul>
 
-  <h3>The chosen quiz is <span style="text-decoration: underline;">{{selectedQuiz.name}}</span>
-    <button id="btnClearChosenQuiz"> clear</button></h3>
-  <h4>Your selected Mode is {{selectedMode}}</h4>
+  <h3>The chosen quiz is:<br><span style="text-decoration: underline;">{{selectedQuiz.name}}</span></h3>
+    <button class="btnClearChosenQuiz">clear</button>
   <br>
   <h3>Select Quiz Mode</h3>
   <div class="btn btn-inverse" id="btnCreateQuizMode">Create Quiz Mode</div>
   <div class="btn btn-inverse" id="btnTakeQuizMode">Take Quiz Mode</div>
-  <br>
-  <br>
-
+  
+  <!-- End quizListDiv -->
+  </div>
 </template>
 
 
@@ -93,6 +101,7 @@
   <h2>Let's create a quiz!</h2>
 
   Quiz Name: <input type="text" id="newQuizName" value="{{quiz.name}}"/>
+  <button class="btnNewQuizToEdit btn btn-medium btn-primary">New Quiz</button>
   <br>
 
 

@@ -32,3 +32,16 @@ span {
 	border: 2px solid gray;
   background-color: white;
 }
+
+.quizListDiv {
+  padding: 25px 10px;
+}
+
+.sidebar {
+
+}
+
+.mainwindow {
+  padding-left: 30px;
+  border-left: 4px solid purple;
+}
