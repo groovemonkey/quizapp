@@ -22,9 +22,9 @@
 
 <template name="quizList">
   <!-- List all quizzes -->
-  <ul>
+  <ul id="quizListUL">
     {{#each quizzes}}
-      <li><span class={{name}}>{{name}}</span> by {{author}}</li>
+      <li class="quiz"><span class={{name}}>{{name}}</span> by {{author}}</li>
     {{/each}}
   </ul>
 
@@ -42,23 +42,49 @@
 
 
 <template name="selectedQuiz">
+
+  {{#if results}}
+  <div id="quizResults">
+
+    {{#if results.isTie}}
+      <p>Winning Categories:</p>
+    {{else}}
+      <p>Winning Category:</p>
+    {{/if}}
+
+    <ul>
+    {{#each results.winner}}
+      <div class="resultsWinner"><li>{{name}}</li></div>
+    {{/each}}
+    </ul>
+
+    <p>The highest score/weight was {{results.score}}.</p>
+  </div>
+  {{/if}}
+
+
   <h3>You're playing a quiz by {{quiz.author}}</h3>
   {{#each quiz.questions}}
+  <div class="question">
 
   <h2>{{text}}</h2>
 
     {{#each answers}}
-      <input type="checkbox" value="1">
-      {{text}}
+    <div class="answer">
+
+      <input type="checkbox" class="answerCheckBox">
+      <span class="answerText">{{text}}</span>
       <br>
+
+    </div> <!-- End .answer Div -->
     {{/each}}
 
-
+  </div> <!-- End .question Div -->
   {{/each}}
 
   <br>
-  <input type="button" value="submitQuizAnswers" />
-
+  <button class="btn btn-large btn-primary" id="submitQuizAnswers" >Grade Quiz!</button>
+  
 </template>
 
 

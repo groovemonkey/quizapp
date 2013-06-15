@@ -26,6 +26,7 @@ Session.set('chosenQuiz', "");
 Session.set('mode', null);
 Session.set('currentQuestionText', null);
 Session.set('new_category_for_new_quiz', false);
+Session.set('quizResults', null);
 
 
 // this is fucking retarded, because I can't put any view-logic in the view (a la ERB)
@@ -76,6 +77,13 @@ Template.selectedQuiz.quiz = function() {
   return Quizzes.findOne({name: Session.get('chosenQuiz')});
 };
 
+Template.selectedQuiz.results = function() {
+  var resultScoreCard = Session.get('quizResults');
+  
+  if (resultScoreCard) {
+    return judgeQuizOutcome(resultScoreCard);
+  }
+};
 
 
 
@@ -92,21 +100,21 @@ Template.createQuiz.quiz = function() {
 
 Template.createQuiz.new_category = function() {
   return Session.get('new_category_for_new_quiz');
-}
+};
 Template.createQuiz.new_question = function() {
   return Session.get('new_question_for_new_quiz');
-}
+};
 Template.createQuiz.new_answer = function() {
   return Session.get('new_answer_for_new_quiz');
-}
+};
 Template.createQuiz.currentQuestionText = function() {
   var cq = Session.get('currentQuestionText');
   if (cq) { return cq; } else { return false; }
-}
+};
 Template.createQuiz.currentQuizID = function() {
   var storedName = Session.get('chosenQuiz');
   return Quizzes.findOne({name: storedName})['_id'];
-}
+};
 
 
 
@@ -172,7 +180,7 @@ Template.createQuiz.events({
       id: quiz_id,
       questionText: questionText,
       answerText: answerText
-    }
+    };
 
     Meteor.call("deleteAnswerFromQuestion", params);
   },
@@ -273,7 +281,41 @@ Template.createQuiz.events({
     Session.set('new_answer_for_new_quiz', false);
   }
 
-});
+}); ////// END Template.createQuiz.events()
+
+
+
+
+Template.selectedQuiz.events({
+  ///////                   ///////
+   /////// GRADING THE QUIZ  ////////
+  ///////                   ///////
+  'click #submitQuizAnswers': function(e,t) {
+    var qName = Session.get('chosenQuiz');
+    var qID = Quizzes.findOne({name: qName})['_id'];
+
+    var selectedAnswers = $('.answerCheckBox:checked').map(function() {
+        var answerText = $($(this).siblings('.answerText')[0]).text();
+        var questionText = $($($(this).parents('.question')[0]).children('h2')[0]).text();
+        return [[answerText, questionText]];
+    }).get();
+
+    var params = {
+      //quizName: qName,
+      quizID: qID,
+      answerPairs: selectedAnswers
+    };
+
+    Meteor.call('gradeQuiz', params, function(err, data) {
+      if (err) { console.log("Error in getting scorecard from the back-end:\n" + err); }
+      else {
+        Session.set('quizResults', data);
+      }
+    });
+  } // end submitQuizAnswers
+
+
+}); ////// END Template.selectedQuiz.events()
 
 
 
@@ -285,8 +327,47 @@ Template.createQuiz.events({
 function focusText(i) {
   i.focus();
   i.select();
-};
+}
 
+function judgeQuizOutcome(scorecard) {
+  var tie = []; //this holds all cat objects which match the highest score
+  var highestScore = 0;
+  var winningCat = [];
+
+  // for each cat-score pair in scorecard
+  for (var catName in scorecard) {
+
+      if(scorecard.hasOwnProperty(catName)) {
+        if (scorecard[catName] > highestScore) {
+          winningCat = [{name: catName}];
+          highestScore = scorecard[catName];
+          // zero out tie, in case there is one
+          tie = [];
+        }
+        // there's a tie!
+        else if (scorecard[catName] == highestScore) {
+          tie.push(winningCat[0]);
+          tie.push({name: catName});
+        }
+      }
+    }
+
+    if (tie[0]) {
+      return {
+        isTie: true,
+        winner: tie,
+        score: highestScore
+      };
+    }
+    // Not Tied
+    else {
+      return {
+        isTie: false,
+        winner: winningCat,
+        score: highestScore
+      };
+    }
+}
 
 function clientUpdateQuestionText() {
   var questiontext = $('#questionInput').val();
@@ -303,7 +384,7 @@ function clientUpdateQuestionText() {
         id: quiz_id,
         currentText: currentQuestionText,
         replacementText: questiontext
-      }
+      };
 
       Meteor.call("updateQuestionText", UpdateParams);
     }

@@ -18,3 +18,17 @@ span {
 .selected {
   background-color: red;
 }
+
+#quizListUL li {
+  list-style: none;
+}
+
+#quizResults {
+	position: absolute;
+	top: 50%;
+	left: 30%;
+	width: 500px;
+  padding: 10px 20px;
+	border: 2px solid gray;
+  background-color: white;
+}

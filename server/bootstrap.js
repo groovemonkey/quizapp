@@ -89,7 +89,51 @@ Meteor.methods({
       { _id: quizID, 'questions.text': questionText },
       { $pull: { questions: {text: questionText }}}
     );
-  } // end deleteQuestion function
+  }, // end deleteQuestion function
+
+
+
+  gradeQuiz: function(params) {
+    //var quizName = params.quizName;
+    var userAnswerPairs = params.answerPairs;
+    var qID = params.quizID;
+    var quiz = Quizzes.findOne({_id: qID});
+    var questions = quiz.questions;
+    var categories = quiz.categories;
+
+    // create an object with a key for each category
+    var scorecard = {};
+    for (var i = categories.length - 1; i >= 0; i--) {
+      scorecard[categories[i].name] = 0;
+    }
+
+    // for each userAnswerPair
+    for (var i = userAnswerPairs.length - 1; i >= 0; i--) {
+      var questionText = userAnswerPairs[i][1];
+      var answerText = userAnswerPairs[i][0];
+
+      // find the question with that text
+      for (var j = questions.length - 1; j >= 0; j--) {
+        if (questions[j].text == questionText) {
+          var question = questions[j];
+
+          // for each answer
+          for (var k = question.answers.length - 1; k >= 0; k--) {
+
+            // find the answer with that text
+            if (question.answers[k].text == answerText) {
+              // (for multiple categories, this needs to change) (for loop, iterate through categories)
+              // check the weight and ++ the appropriate category.
+              var category = question.answers[k].affected_categories;
+              scorecard[category] += 1;
+            }
+           }
+        }
+      }
+    }
+    return scorecard;
+
+  } // end gradeQuiz
 
 
 
