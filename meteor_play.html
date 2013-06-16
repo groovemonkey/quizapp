@@ -37,9 +37,12 @@
     {{/each}}
   </ul>
 
-  <h3>The chosen quiz is:<br><span style="text-decoration: underline;">{{selectedQuiz.name}}</span></h3>
+  <hr>
+
+  <h3>The chosen quiz is:<br><span class="chosenQuizName">{{selectedQuiz.name}}</span></h3>
     <button class="btnClearChosenQuiz">clear</button>
   <br>
+  <hr>
   <h3>Select Quiz Mode</h3>
   <div class="btn btn-inverse" id="btnCreateQuizMode">Create Quiz Mode</div>
   <div class="btn btn-inverse" id="btnTakeQuizMode">Take Quiz Mode</div>
@@ -55,17 +58,16 @@
   <div id="quizResults">
 
     {{#if results.isTie}}
-      <p>Winning Categories:</p>
+      <h2>Winning Categories:</h2>
     {{else}}
-      <p>Winning Category:</p>
+      <h2>Winning Category:</h2>
     {{/if}}
 
-    <ul>
     {{#each results.winner}}
-      <div class="resultsWinner"><li>{{name}}</li></div>
+      <div class="resultsWinner">{{name}}</div>
     {{/each}}
-    </ul>
 
+    <br>
     <p>The highest score/weight was {{results.score}}.</p>
   </div>
   {{/if}}
@@ -75,7 +77,7 @@
   {{#each quiz.questions}}
   <div class="question">
 
-  <h2>{{text}}</h2>
+  <span class="questiontext">{{text}}</span>
 
     {{#each answers}}
     <div class="answer">
@@ -86,7 +88,7 @@
 
     </div> <!-- End .answer Div -->
     {{/each}}
-
+  <hr>
   </div> <!-- End .question Div -->
   {{/each}}
 
@@ -99,9 +101,11 @@
 
 <template name="createQuiz">
   <h2>Let's create a quiz!</h2>
-
-  Quiz Name: <input type="text" id="newQuizName" value="{{quiz.name}}"/>
   <button class="btnNewQuizToEdit btn btn-medium btn-primary">New Quiz</button>
+  
+  <hr>
+
+  Quiz Name: <input type="text" id="newQuizName" value="{{quiz.name}}" />
   <br>
 
 
@@ -136,8 +140,6 @@
   </div> <!-- End Categories Section -->
 
 
-  <br><br>
-
 
   <!-- Start Questions Section -->
 
@@ -146,17 +148,17 @@
   <div class="questionList">
     {{#each quiz.questions}}
       <div class="question">
-        <br>
         <span class="questiontext">{{text}}</span><button class="btnDeleteQuestion" class="btn btn-small">x</button>
 
         {{#each answers}}
           <div class="answer">
-            Answer: <span>{{text}}</span><button class="btnDeleteAnswer" class="btn btn-small">x</button><br>
+            <!-- Answer: --><span class="answerText">{{text}}</span><button class="btnDeleteAnswer" class="btn btn-small">x</button><br>
             <p>Affected Categories: {{affected_categories}}</p>
           </div>
         {{/each}}
 
       </div> <!-- end div.question -->
+      <hr>
     {{/each}}
 
 
@@ -174,7 +176,7 @@
 
   <div class="newQuizQuestion">
 
-    Question: <input type="text" id="questionInput" value="" />
+    Question: <textarea type="text" id="questionInput" value="" cols="550" rows="2" />
 
     <br>
 
@@ -197,6 +199,7 @@
     {{#if new_answer}}
 
     <br><br>
+      <h4>Add A New Answer:</h4>
       <div class="newAnswerDiv">
         Answer: <input type="text" id="answerInput" />
 
@@ -214,7 +217,6 @@
            </fieldset>
 
         <button class="btn" type="button" id="btnSaveAnswer">Save Answer</button>
-        <br><br>
 
        </div> <!-- End answer Div -->
 

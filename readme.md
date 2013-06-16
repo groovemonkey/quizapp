@@ -11,6 +11,10 @@ Then, users and storing results permanently.
 
 
 ###TODO:
+editing existing categories (changing names or descriptions)
+in "quiz results" window, show descriptions of winning category(/ies)
+add a "delete quiz" feature
+
 
 A user has a record of all quizzes taken and made.
 For each quiz taken, there is a record of choices and the last calculated score.

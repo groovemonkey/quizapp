@@ -1,11 +1,10 @@
 /* CSS declarations go here */
 
-span {
-  color: blue;
-}
 
 #categories {
   padding: 10px 20px;
+  margin-top: 15px;
+  margin-bottom: 35px;
   border: 2px solid black;
 }
 
@@ -44,4 +43,62 @@ span {
 .mainwindow {
   padding-left: 30px;
   border-left: 4px solid purple;
+}
+
+textarea {
+  width: 600px;
+  height: 50px;
+}
+
+
+/* Typography */
+
+h2, h4 {
+  color: purple;
+}
+
+span.questiontext {
+  color: purple;
+  font-weight: bold;
+  font-size: 14pt;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.answer {
+  padding-left: 20px;
+  margin-top: 10px;
+}
+
+.answerText {
+  font-weight: bold;
+  color: black;
+}
+#answerInput {
+  width: 350px;
+}
+
+#quizListUL span {
+  color: blue;
+}
+
+#newQuizName {
+  width: 350px;
+}
+
+.chosenQuizName {
+  color: purple;
+  text-decoration: underline;
+}
+
+.question {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.resultsWinner {
+  font-family: Georgia, serif;
+  font-size: 18px;
+  text-decoration: underline;
+  font-weight: bold;
 }

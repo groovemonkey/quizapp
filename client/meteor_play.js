@@ -166,20 +166,22 @@ Template.createQuiz.events({
   },
 
   'click .btnDeleteQuestion' : function(e,t) {
-    var tgt = $(e.target).parents('.question');
-    var questiontext = tgt.children('.questiontext').text();
-    var quiz_id = Template.createQuiz.currentQuizID();
+    if (confirm("Are you sure you want to delete this question?")) {
+      var tgt = $(e.target).parents('.question');
+      var questiontext = tgt.children('.questiontext').text();
+      var quiz_id = Template.createQuiz.currentQuizID();
 
-    // delete it
-    var params = {
-      questionText: questiontext,
-      id: quiz_id
-    };
+      // delete it
+      var params = {
+        questionText: questiontext,
+        id: quiz_id
+      };
 
-    Meteor.call("deleteQuestion", params);
+      Meteor.call("deleteQuestion", params);
 
-    // clear the deleted question
-    Session.set('currentQuestionText', null);
+      // clear the deleted question
+      Session.set('currentQuestionText', null);
+    } // end if
   },
 
   'click .btnDeleteAnswer' : function(e,t) {
@@ -281,6 +283,9 @@ Template.createQuiz.events({
       var tgt = $(e.target).parents('.question'); // top level (in case you clicked on an answer or something)
       var questiontext = tgt.children('.questiontext').text(); // further down in the DOM, find questiontext
 
+      // In case we had a "new question" form open, close it.
+      Session.set('new_question_for_new_quiz', false);
+
       // out with the old...
       $('.question.selected').removeClass('selected');
 
@@ -314,7 +319,7 @@ Template.selectedQuiz.events({
 
     var selectedAnswers = $('.answerCheckBox:checked').map(function() {
         var answerText = $($(this).siblings('.answerText')[0]).text();
-        var questionText = $($($(this).parents('.question')[0]).children('h2')[0]).text();
+        var questionText = $($($(this).parents('.question')[0]).children('.questiontext')[0]).text();
         return [[answerText, questionText]];
     }).get();
 
