@@ -62,6 +62,21 @@ Template.bodyTemplate.mode_is_createQuiz = function() {
 
 
 
+
+// chosenQuizName template -- is there a better way to deal with markup?
+Template.chosenQuizName.selectedQuiz = function() {
+ return getSelectedQuiz();
+};
+
+Template.chosenQuizName.events({
+  'click .btnClearChosenQuiz' : function(e,t) {
+    Session.set('chosenQuiz', "");
+  }
+});
+
+
+
+
 ////// quizList template
 Template.quizList.selectedMode = function() {
   return Session.get('mode');
@@ -70,13 +85,11 @@ Template.quizList.quizzes = function() {
   return Quizzes.find();
 };
 Template.quizList.selectedQuiz = function() {
-  return Quizzes.findOne({name: Session.get('chosenQuiz')});
+  return getSelectedQuiz();
 };
 
 Template.quizList.events({
-  'click .btnClearChosenQuiz' : function(e,t) {
-    Session.set('chosenQuiz', "");
-  }
+// THERE ARE NO EVENTS FOR QUIZLIST
 
 }); // end quizList template events
 
@@ -335,7 +348,12 @@ Template.selectedQuiz.events({
         Session.set('quizResults', data);
       }
     });
-  } // end submitQuizAnswers
+  }, // end submitQuizAnswers
+
+
+  'click #quizResults .close': function(e,t) {
+    Session.set('quizResults', false);
+  }
 
 
 }); ////// END Template.selectedQuiz.events()
@@ -345,6 +363,11 @@ Template.selectedQuiz.events({
 
 
 // Generic Helper Functions
+
+// get a selected quiz
+function getSelectedQuiz() {
+  return Quizzes.findOne({name: Session.get('chosenQuiz')});
+}
 
 // focus on an element
 function focusText(i) {

@@ -9,6 +9,7 @@
       {{> quizList}}
     </div>
     <div class="span8 mainwindow">
+      {{> chosenQuizName }}
       {{> bodyTemplate}}
     </div>
 
@@ -39,10 +40,6 @@
 
   <hr>
 
-  <h3>The chosen quiz is:<br><span class="chosenQuizName">{{selectedQuiz.name}}</span></h3>
-    <button class="btnClearChosenQuiz">clear</button>
-  <br>
-  <hr>
   <h3>Select Quiz Mode</h3>
   <div class="btn btn-inverse" id="btnCreateQuizMode">Create Quiz Mode</div>
   <div class="btn btn-inverse" id="btnTakeQuizMode">Take Quiz Mode</div>
@@ -52,11 +49,25 @@
 </template>
 
 
+
+<template name="chosenQuizName">
+    <h3>The chosen quiz is: <span class="chosenQuizName">{{selectedQuiz.name}}</span></h3>
+    
+    {{#if selectedQuiz.author}}
+    <h4>(a quiz by {{selectedQuiz.author}})</h4>
+    {{/if}}
+    <button class="btnClearChosenQuiz">clear</button>
+    <hr>
+</template>
+
+
+
 <template name="selectedQuiz">
 
   {{#if results}}
   <div id="quizResults">
-
+    <button class="close">&times;</button>
+    
     {{#if results.isTie}}
       <h2>Winning Categories:</h2>
     {{else}}
@@ -73,7 +84,6 @@
   {{/if}}
 
 
-  <h3>You're playing a quiz by {{quiz.author}}</h3>
   {{#each quiz.questions}}
   <div class="question">
 
