@@ -1,8 +1,8 @@
 Quizzes = new Meteor.Collection("quizzes");
 
-// Meteor.publish('Quizzes', function () {
-//    return Quizzes.find();
-//  });
+Meteor.publish('Quizzes', function () {
+   return Quizzes.find();
+ });
 
 
 

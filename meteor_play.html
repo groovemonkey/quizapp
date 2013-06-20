@@ -3,17 +3,33 @@
 </head>
 
 <body>
-  <div class="row">
+  <div class="row container">
+    
+      <div class="row">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <a class="brand" href="#">QuizApp</a>
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#">Link</a></li>
+              <li><a href="#">{{loginButtons}}</a></li>
+            </ul>
+          </div> <!-- End navbar-inner -->
+        </div> <!-- End navbar -->
+      </div> <!-- End row -->
 
-    <div class="span4 sidebar">
-      {{> quizList}}
-    </div>
-    <div class="span8 mainwindow">
-      {{> chosenQuizName }}
-      {{> bodyTemplate}}
+    <div class="row test">
+      <div class="span4 sidebar">
+        {{> quizList}}
+      </div>
+      <div class="span8 mainwindow">
+        {{> chosenQuizName }}
+        {{> bodyTemplate}}
+      </div>
     </div>
 
-  </div>
+
+  </div> <!-- End PAGE CONTAINER row -->
 </body>
 
 <template name="bodyTemplate">
