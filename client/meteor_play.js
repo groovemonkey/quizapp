@@ -69,9 +69,23 @@ Template.chosenQuizName.selectedQuiz = function() {
 };
 
 Template.chosenQuizName.events({
-  'click .btnClearChosenQuiz' : function(e,t) {
+  'click .btnClearChosenQuiz': function(e,t) {
     Session.set('chosenQuiz', "");
+  },
+
+  'click .btnDeleteChosenQuiz': function(e,t) {
+    // we need to be logged in
+    if (Meteor.userId()) {
+      if (confirm("Are you sure you want to DELETE this quiz? The entire thing will be vaporized and sent to the big database in the sky...")) {
+        var quiz_id = Template.createQuiz.currentQuizID();
+        Quizzes.remove({_id: quiz_id});
+      }
+    }
+    else {
+      alert("You need to be logged in to delete a Quiz.");
+    }
   }
+
 });
 
 
@@ -228,15 +242,21 @@ Template.createQuiz.events({
   /////// THIS FUNCTION CREATES A NEW, UNFINISHED OBJECT.
   'keyup #newQuizName': function(e,t) {
       if (e.which === 13) {
+
+        // these vars don't all have to be set here (it's inefficient)...
+        // but I find that they improve readability #optimization
         var name = String(e.target.value || "");
         var storedName = Session.get('chosenQuiz');
+        var userID = Meteor.userId();
+
         if (name) { // if the field is not empty
           if (storedName) { // and there's a current quiz
             var quiz_id = Template.createQuiz.currentQuizID();
             Quizzes.update({_id: quiz_id},{$set:{name: name}});
           }
           else { // if there's a name in the field but no current quiz
-            Quizzes.insert({name: name});
+            Quizzes.insert({name: name,
+                            author: Meteor.user().emails[0].address});
           }
           // in both cases, update the session value
           Session.set('chosenQuiz', name);

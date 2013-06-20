@@ -67,13 +67,16 @@
 
 
 <template name="chosenQuizName">
+  {{#if selectedQuiz}}
     <h3>The chosen quiz is: <span class="chosenQuizName">{{selectedQuiz.name}}</span></h3>
     
     {{#if selectedQuiz.author}}
     <h4>(a quiz by {{selectedQuiz.author}})</h4>
     {{/if}}
-    <button class="btnClearChosenQuiz">clear</button>
+    <button class="btnClearChosenQuiz btn">Clear</button>
+    <button class="btnDeleteChosenQuiz btn btn-danger">Delete Quiz</button>
     <hr>
+  {{/if }}
 </template>
 
 
